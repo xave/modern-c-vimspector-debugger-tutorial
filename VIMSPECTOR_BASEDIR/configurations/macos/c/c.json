@@ -1,0 +1,72 @@
+/* Basic configurations for debugging with Vimspector
+ *  
+ *   NOTE: C/C++ style comments are allowed here since Vimspector
+ *         will remove them before parsing the json file
+ *
+ *   This contains basic configurations for debugging local/remote
+ *   python/C programs.
+ *
+ *   1. C - LLDB    : debug local C code
+ *    
+ *
+ *   Debugging chain:
+ *   Vim -> Vimspector plugin -> specific-language adapter -> specific-language debugger -> binary (or attach to remote server)
+ *          |                    |                            |                             |
+ *          |                    |                            |                             \_ File to debug
+ *          |                    |                            \_ native debugger (ie: lldb)
+ *          |                    \_ DAP to native-language debugger (ie: vscode-cpptools)
+ *          |                       Yes.. Vimspector takes advantage of the Vscode adapters.
+ *          |                       
+ *          \_ Visual debugging support (windows for code/variables/..) and DAP (Debug Adapter Protocol from Microsoft) support
+ *
+ *   DAP is a language-agnostic debug protocol, which of course, is not supported by any debugger :), so DAP-debugger adapters are
+ *   needed in order to complete the chain. In the end, you'll be using the usual debugger under the hood. You can even execute regular
+ *   native commands if you need to (ie: (for lldb) -exec p i)
+ *
+ *   For remote debugging, you need, of course, to launch the debugger server (ie: lldb-server, debugpy, ...). You can automate this process
+ *   inside the adapter configuration (by connecting using PASSWORDLESS ssh and running the server in the remote machine). 
+ *   In the next configurations, it is assumed that you manually enter the remote machine and launch the debugger server. I don't quite
+ *   like to be Forced to use passwordless ssh to automate this task (anyway configure it is very easy).
+ *
+*/
+{
+  "adapters": {
+    "cpptools-remote": {
+      "command": [
+        "${gadgetDir}/vscode-cpptools/debugAdapters/OpenDebugAD7"
+      ],
+      "name": "cppdbg",
+      "configuration": {
+        "type": "cppdbg"
+      }
+    }
+  },
+  "configurations": {
+    "C - LLDB": {
+      // Local C debugging with native-arch (e.g. `arm64` for M1 macOS)
+      "adapter": "vscode-cpptools",
+      "variables": {
+        "targetArch" : {
+          "shell": [
+            "uname",
+            "-m"
+          ]
+        } 
+      },
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/${fileBasenameNoExtension}",
+        "StopAtEntry": true,
+        "MIMode": "lldb",
+        "targetArchitecture": "${targetArch}",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for lldb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ]
+      }
+    }
+  }
+}

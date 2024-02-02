@@ -1,0 +1,106 @@
+" excerpt .vimrc to be added to your primary .vimrc
+" vimspector setup
+" https://github.com/puremourning/vimspector
+
+"Turn on plugin
+filetype plugin indent on
+
+" Set localleader to backslash
+"let localleader="\\"
+
+
+" Set global dir
+let g:vimspector_base_dir=expand( '$HOME/.vim/vimspector-config' )
+
+"Evaluate console expressions
+function! LLDBPrompt() abort
+    " Gives you the convenience of the lldb prompt
+    " without having to type "-exec " all the time
+    let get_prompt_command = input("(lldb) ")
+    exe 'VimspectorEval -exec ' get_prompt_command
+endfunction
+
+nmap <localleader>z     :call LLDBPrompt()<CR>
+"    e.g. <localleader>z p a
+"                        ^^^
+"                        prints the variable a
+
+let g:vimspector_enable_auto_hover=1
+nmap <localleader>e     <Plug>VimspectorBalloonEval
+xmap <localleader>e     <Plug>VimspectorBalloonEval
+
+" Starting and Stopping
+nmap <localleader>g     <Plug>VimspectorLaunch
+nmap <localleader>p     <Plug>VimspectorPause
+nmap <localleader>r     <Plug>VimspectorRestart
+nmap <localleader>t     <Plug>VimspectorStop
+nmap <localleader>tt    :tabc<CR>:quit<CR>
+"nmap <localleader>tt    <Plug>VimspectorStop <bar> qall
+
+" Breakpoints and Watchpoints
+nmap <localleader>b     <Plug>VimspectorToggleBreakpoint
+nmap <localleader>B     :call vimspector#ClearBreakpoints()<CR>
+nmap <localleader>bc    <Plug>VimspectorToggleConditionalBreakpoint
+nmap <localleader>bf    <Plug>VimspectorAddFunctionBreakpoint
+nmap <localleader>br    <Plug>VimspectorRunToCursor
+
+" Stepping In/Out/Over
+"    Step Over = |n|ext             (step over the function as if black box)
+"    Step Into = |s|tep into        (line-by-line)
+"    Step Out  ~ |f|inish           (go to the end of current function)
+"    Continue  = |c|ontinue         (to next breakpoint)
+nmap <localleader>n     <Plug>VimspectorStepOver
+nmap <localleader>s     <Plug>VimspectorStepInto
+nmap <localleader>f     <Plug>VimspectorStepOut
+nmap <localleader>c     <Plug>VimspectorContinue
+
+" Toggle the breakpoints window
+nmap <localleader>bb    <Plug>VimspectorBreakpoints
+nmap <localleader>u     <Plug>VimspectorUpFrame
+nmap <localleader>U     <Plug>VimspectorDownFrame
+nmap <localleader>d     <Plug>VimspectorDisassemble
+
+" A Sessions Workflow
+"  There are two types of sessions: typical vim sessions and vimspector
+"  breakpoint dumps. Saving active breakpoints includes any of
+"   - line breakpoints,
+"   - logpoints,
+"   - conditional breakpoints,
+"   - function breakpoints
+"   - exception breakpoint filters
+"
+"   Workflow:
+"   - set any breakpoints and open any files of interest
+"   - `<localleader>ss` to save both a session and any breakpoints
+"   - Either 1) Run `vim -S .vimspector-session.vim`
+"   -     or 2) open `vim` and `<localleader>sl`
+"
+" Vimspector Sessions
+"  Set session name (default: `.vimspector.session`)
+"
+"   NOTE: *x.vim are automatically loaded when vim loaded with corresponding session
+"         e.g. `session.vim` and `sessionx.vim`
+let g:vimspector_session_file_name = ".vimspector-sessionx.vim"
+
+" Breakpoint Session Only
+nmap <localleader>bs    :VimspectorMkSession .vimspector-sessionx.vim<CR>
+nmap <localleader>bl    :VimspectorLoadSession .vimspector-sessionx.vim<CR>
+
+" Vimspector Session (plus Breakpoints)
+" Session save
+nnoremap <localleader>ss    :mksession! .vimspector-session.vim<CR> :VimspectorMkSession<CR> :echo "Saved session and any breakpoints"<CR>
+vnoremap <localleader>ss    <Esc>:mksession! .vimspector-session.vim<CR> :VimspectorMkSession<CR> :echo "Saved session and any breakpoints"<CR>
+" Session load
+nnoremap <localleader>sl    :source .vimspector-session.vim<CR>
+vnoremap <localleader>sl    <Esc>:source .vimspector-session.vim<CR>v
+autocmd SessionLoadPost * silent! VimspectorLoadSession
+
+" Allow comments in json
+augroup json_with_comments
+    " vimspector json files can have comments
+    " plugin strips them automatically upon use
+    autocmd!
+    autocmd Filetype json syn region jsonComment start="/\*" end="\*/"
+    autocmd Filetype json hi link jsonComment Comment
+    autocmd Filetype json hi link jsonCommentError Comment
+augroup end

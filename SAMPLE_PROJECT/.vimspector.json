@@ -1,0 +1,15 @@
+{
+  "configurations": {
+     "C - LLDB [project]": {
+          "extends": "C - LLDB",
+          "default" : true,
+          "autoselect" : true,
+          "variables" : {
+            "buildapp" : "build/app"
+          },
+          "configuration": {
+            "program": "${workspaceRoot}/${buildapp}"
+          }
+      }
+  }
+}
