@@ -48,7 +48,7 @@ let g:vimspector_base_dir=expand( '$HOME/.vim/vimspector-config' )
 
 Otherwise, you will have to add certain config files deep in the directory hierarchy of the plugin itself. 
 
-**NOTE:** This directory will be referred to as `$VIMSPECTOR\_BASEDIR` in this tutorial.
+**NOTE:** This directory will be referred to as `$VIMSPECTOR_BASEDIR` in this tutorial.
 
 ## Gadgets
 
@@ -56,13 +56,13 @@ Gadgets correspond to adapters, the things that the `vimspector` plugin is actin
 
 If one attempts to launch a debugger without the configured gadget/adapter, a prompt will pop up to install it. It is possible to add configuration for adapter installs or even to run a command in `vim` such as `:VimspectorInstall <adapter>` where `<adapter>` could be something like `debugpy` for `Python` or `CodeLLDB` for `C` projects. For our purposes it will be sufficient to have it prompt us, installing upon first use. More info is found on the project page. 
 
-The installed gadgets will go in `$VIMSPECTOR\_BASEDIR/gadgets/$OS/$GADGETNAME` where `$OS` is the operating system (e.g. "macos", "linux") and `$GADGETNAME` is one of the installed adapters such as `CODELLDB` or `vscode-cpptools`.
+The installed gadgets will go in `$VIMSPECTOR_BASEDIR/gadgets/$OS/$GADGETNAME` where `$OS` is the operating system (e.g. "macos", "linux") and `$GADGETNAME` is one of the installed adapters such as `CODELLDB` or `vscode-cpptools`.
 
 ## .vimspector.json
 
 The most important file is the `.vimspector.json`. This configures the adapter as well as parameters such as how the debugger is launched/attached, port configuration for remote debugging, and command line arguments, and many more. This tutorial is meant to show a simple workflow to get one started. Afterwards, one should reference the docs as project needs demand. 
 
-The `.vimspector.json` file lives in each project root. There are also other `.vimspector.json` files that one can create and place at `$VIMSPECTOR\_BASEDIR/configurations/$OS/$LANGUAGE/$LANGUAGE.json`. The workflow we will use here is to create a `$LANGUAGE.json` in the aforementioned directory. That will serve as the "default" settings. Then we will modify certain project-specific fields in the `.vimspector.json` to suit our individual project's needs. For instance, the default might have the build executable be in the root of the code repo whereas the project one is working on might have a different directory structure. 
+The `.vimspector.json` file lives in each project root. There are also other `.vimspector.json` files that one can create and place at `$VIMSPECTOR_BASEDIR/configurations/$OS/$LANGUAGE/$LANGUAGE.json`. The workflow we will use here is to create a `$LANGUAGE.json` in the aforementioned directory. That will serve as the "default" settings. Then we will modify certain project-specific fields in the `.vimspector.json` to suit our individual project's needs. For instance, the default might have the build executable be in the root of the code repo whereas the project one is working on might have a different directory structure. 
 
 First, let us explore the structure of the `.vimspector.json`. Notice that these `JSON` files have two top level fields: `adapters` and `configurations`. 
 
@@ -118,6 +118,7 @@ For this tutorial, we will not focus on "adapter configuration". Instead, we wil
 
 Consider the configuration for local debugging with `lldb`. The debugger configuration part of our `.vimspector.json` (in the `configurations` section) might look like:
 
+```
 {
   "configurations": {
     "C - LLDB": {
@@ -148,17 +149,17 @@ Consider the configuration for local debugging with `lldb`. The debugger configu
     }
   }
 }
-
+```
 
 Here we see a debugging configuration called `C - LLDB`. Notice that we have read the shell command `uname -m` into the variable `targetArch` which we then use below in the `configuration` section for the `targetArchitecture` field. Furthermore, we have set the compiler to be `lldb`. One could change this to be `gdb` if on `Linux`. In this particular case we have the `setupCommands` to enable "pretty-printing". Since `lldb` has pretty-printing on by default, this does nothing. However, if one were to change the `MIMode` to `gdb` it would activate pretty-printing on `gdb`. 
 
-This `.vimspector.json` will actually be our default in our case (located in `$VIMSPECTOR\_BASEDIR/configuration/$OS/c/c.json`) and will be referred to as `c.json`. The `$LANGUAGE.json` is a useful convention, though one can technically have multiple language settings in a given file and can therefore structure these directories with a bit of latitude. In fact, `vimspector` will populate a list of all the applicable debugger configurations it knows about when it is launched. 
+This `.vimspector.json` will actually be our default in our case (located in `$VIMSPECTOR_BASEDIR/configuration/$OS/c/c.json`) and will be referred to as `c.json`. The `$LANGUAGE.json` is a useful convention, though one can technically have multiple language settings in a given file and can therefore structure these directories with a bit of latitude. In fact, `vimspector` will populate a list of all the applicable debugger configurations it knows about when it is launched. 
 
 *Aside:* Notice when you finally start using this that if you were to comment out the entire `variables` section in `c.json`, the prompt would ask you to fill in the `targetArchitecture` by hand when you try to use this debugger. You would do this each time the debugger is run. This could be useful to know. 
 
 ## Project .vimspector.json
 
-Every project needs a `.vimspector.json` file. This file, placed in the project's root (e.g. `git` repo root directory), overwrites certain aspects of the `$VIMSPECTOR\_BASEDIR` `.json` files (e.g. `c.json`) where appropriate. An example of a project specific overwrite is:
+Every project needs a `.vimspector.json` file. This file, placed in the project's root (e.g. `git` repo root directory), overwrites certain aspects of the `$VIMSPECTOR_BASEDIR` `.json` files (e.g. `c.json`) where appropriate. An example of a project specific overwrite is:
 
 ```
 {
@@ -188,7 +189,7 @@ To summarize so far, we have two sets of `.vimspector.json` files:
 
 Gadgets are installed automatically when you need them. You can fine-tune that behavior if you want, but it is not strictly necessary. 
 
-We have provided a convenient `$VIMSPECTOR\_BASEDIR` in the `vimrc`. 
+We have provided a convenient `$VIMSPECTOR_BASEDIR` in the `vimrc`. 
 
 Now we are ready to use this to debug. 
 
@@ -223,7 +224,7 @@ The outcome (value of `myVar`) will show up in the `Vimspector.Console` window.
 
 ## Keybindings for Session handling (save/restore breakpoints and vim session)
 
-There are also some keybindings for saving/loading breakpoints and vim sessions. One would begin by setting some breakpoints and typing `<localleader>ss` for "session save". This saves a `.vimspector-session.vim` and a `.vimspector-sessionx.vim`. When one wants to resume the debugging, one could type `<localleader>sl for "session load". This will restore any breakpoints, watchpoints, etc. that had been saved as well as anything that would be stored in a typical vim session. One could also call `vim -S .vimspector-session.vim` and the breakpoint info would also automatically load. All of this is due to the bindings and helper function in the provided `vimrc`. The `vimspector` plugin does not quite work like this out of the box.
+There are also some keybindings for saving/loading breakpoints and `vim` sessions. One would begin by setting some breakpoints and typing `<localleader>ss` for "session save". This saves a `.vimspector-session.vim` and a `.vimspector-sessionx.vim`. When one wants to resume the debugging, one could type `<localleader>sl` for "session load". This will restore any breakpoints, watchpoints, etc. that had been saved as well as anything that would be stored in a typical `vim` session. One could also call `vim -S`.vimspector-session.vim` and the breakpoint info would also automatically load. All of this is due to the bindings and helper function in the provided `vimrc`. The `vimspector` plugin does not quite work like this out of the box.
 
 Note: `\*.x.vim` files are automatically sourced when a session of the same name without the "x" is sourced. In our case, we save the typical vim session state in `.vimspector-session.vim` and the `.vimspector-sessionx.vim` with all the breakpoint info loads seamlessly along with it. The default `.vimspector.session` name has been modified via the `vimrc` excerpt to facilitate this workflow.
 
@@ -233,15 +234,15 @@ Some keybindings for things such as launching a debugger, setting and editing br
 
 ## JSON comments
 
-It should be noted that `vimspector` allows C-style comments in its .json files and strips them out before processing. A syntax highlighting `automod` has been added to the excerpt vimrc to change error coloring to comment coloring for your sanity. 
+It should be noted that `vimspector` allows C-style comments in its .json files and strips them out before processing. A syntax highlighting `automod` has been added to the excerpt `vimrc` to change error coloring to comment coloring for your sanity. 
 
 # Conclusion
 
-Remember to compile your project (and with debug symbols)! 
+Remember to compile your project (and with debug symbols)! A build script is provided. 
 
 That aside, installation involves
-    - adding this excerpt `vimrc` to your `.vimrc
-    - adding the included `c.json` to your `$VIMSPECTOR\_BASEDIR/configurations/$OS/c/c.json`
+    - adding this excerpt `vimrc` to your `.vimrc`
+    - adding the included `c.json` to your `$VIMSPECTOR_BASEDIR/configurations/$OS/c/c.json`
     - adding the `.vimspector.json` to the project root
     - installing the necessary gadget on first use (should be prompted automatically)
 
