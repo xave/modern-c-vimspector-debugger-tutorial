@@ -4,6 +4,7 @@
 
 [Introduction](#Introduction) •
 [Outcome](#Outcome) •
+[Provisions](#Provisions) •
 [Setup](#Setup) •
 [Configurations](#Configurations) •
 [Keybindings](#Keybindings) •
@@ -34,6 +35,14 @@ By the end of this tutorial, one will have:
 - a convenience keybinding for making `lldb` calls while debugging
 - keybindings for performing common debugging tasks (such as creating breakpoints, launching the debugger, and saving/loading breakpoints to file)
 
+# Provisions
+
+The following is provided:
+
+- `HOME` - a directory that corresponds to your system home directory. The excerpt `vimrc` is here.
+- `SAMPLE_PROJECT` - a sample C project with its `.vimspector.json` config.
+- `VIMSPECTOR_BASEDIR` - a directory that corresponds to your vimspector base directory (see below).
+ 
 # Setup
 
 While there are many possible configurations possible even for one compiler, we will focus on the fastest path to getting a working, general implementation. From there, one can read the docs and tune to one's own needs and desires. 
@@ -224,7 +233,7 @@ The outcome (value of `myVar`) will show up in the `Vimspector.Console` window.
 
 ## Keybindings for Session handling (save/restore breakpoints and vim session)
 
-There are also some keybindings for saving/loading breakpoints and `vim` sessions. One would begin by setting some breakpoints and typing `<localleader>ss` for "session save". This saves a `.vimspector-session.vim` and a `.vimspector-sessionx.vim`. When one wants to resume the debugging, one could type `<localleader>sl` for "session load". This will restore any breakpoints, watchpoints, etc. that had been saved as well as anything that would be stored in a typical `vim` session. One could also call `vim -S`.vimspector-session.vim` and the breakpoint info would also automatically load. All of this is due to the bindings and helper function in the provided `vimrc`. The `vimspector` plugin does not quite work like this out of the box.
+There are also some keybindings for saving/loading breakpoints and `vim` sessions. One would begin by setting some breakpoints and typing `<localleader>ss` for "session save". This saves a `.vimspector-session.vim` and a `.vimspector-sessionx.vim`. When one wants to resume the debugging, one could type `<localleader>sl` for "session load". This will restore any breakpoints, watchpoints, etc. that had been saved as well as anything that would be stored in a typical `vim` session. One could also call `vim -S vimspector-session.vim` and the breakpoint info would also automatically load. All of this is due to the bindings and helper function in the provided `vimrc`. The `vimspector` plugin does not quite work like this out of the box.
 
 Note: `\*.x.vim` files are automatically sourced when a session of the same name without the "x" is sourced. In our case, we save the typical vim session state in `.vimspector-session.vim` and the `.vimspector-sessionx.vim` with all the breakpoint info loads seamlessly along with it. The default `.vimspector.session` name has been modified via the `vimrc` excerpt to facilitate this workflow.
 
