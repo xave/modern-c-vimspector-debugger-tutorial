@@ -250,10 +250,10 @@ It should be noted that `vimspector` allows C-style comments in its .json files 
 Remember to compile your project (and with debug symbols)! A build script is provided. 
 
 That aside, installation involves
-    - adding this excerpt `vimrc` to your `.vimrc`
-    - adding the included `c.json` to your `$VIMSPECTOR_BASEDIR/configurations/$OS/c/c.json`
-    - adding the `.vimspector.json` to the project root
-    - installing the necessary gadget on first use (should be prompted automatically)
+- adding this excerpt `vimrc` to your `.vimrc`
+- adding the included `c.json` to your `$VIMSPECTOR_BASEDIR/configurations/$OS/c/c.json`
+- adding the `.vimspector.json` to the project root
+- installing the necessary gadget on first use (should be prompted automatically)
 
 Other than that, explore your code achieve some things, and maybe later see what other things you could configure with the docs. Keep it simple.
 
