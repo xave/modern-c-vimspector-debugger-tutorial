@@ -22,8 +22,8 @@ The pipeline from (A) to (E) is:
 
 - (A) `vim`
 - (B) `vimspector` plugin (the DAP layer)
-- (C) language-specific adapter (e.g. CodeLLDB, vscode-cpptools)
-- (D) language-specific debugger (e.g. lldb, gdb)
+- (C) language-specific adapter (e.g. `CodeLLDB`, `vscode-cpptools`)
+- (D) language-specific debugger (e.g. `lldb`, `gdb`)
 - (E) use binary -or- attach to remote server
 
 # Outcome
@@ -164,7 +164,7 @@ Here we see a debugging configuration called `C - LLDB`. Notice that we have rea
 
 This `.vimspector.json` will actually be our default in our case (located in `$VIMSPECTOR_BASEDIR/configuration/$OS/c/c.json`) and will be referred to as `c.json`. The `$LANGUAGE.json` is a useful convention, though one can technically have multiple language settings in a given file and can therefore structure these directories with a bit of latitude. In fact, `vimspector` will populate a list of all the applicable debugger configurations it knows about when it is launched. 
 
-*Aside:* Notice when you finally start using this that if you were to comment out the entire `variables` section in `c.json`, the prompt would ask you to fill in the `targetArchitecture` by hand when you try to use this debugger. You would do this each time the debugger is run. This could be useful to know. 
+*ASIDE:* Notice when you finally start using this that if you were to comment out the entire `variables` section in `c.json`, the prompt would ask you to fill in the `targetArchitecture` by hand when you try to use this debugger. You would do this each time the debugger is run. This could be useful to know. 
 
 ## Project .vimspector.json
 
@@ -204,7 +204,7 @@ Now we are ready to use this to debug.
 
 # Keybindings
 
-Debuggers are feature-rich with near endless possibilities for how they can be configured. The goal here is to set up some keybindings and utility workflows to get one started. From there, it can be adjusted and added to one's taste. 
+Debuggers are feature-rich with near endless possibilities for how they can be configured. The goal here is to set up some keybindings and utility workflows to get one started. From there, it can be adjusted to one's taste. 
 
 At a high level, we have defined some keybindings via the included `vimrc` excerpt for uses like launching, stepping through functions, setting breakpoints, and loading/saving breakpoint states and sessions.
 
@@ -212,15 +212,15 @@ At a high level, we have defined some keybindings via the included `vimrc` excer
 
 Not all debugger functionality has a dedicated function in the `vimspector` plugin (see [the plugin page](https://github.com/puremourning/vimspector) for what is supported). This is fine as one can create `vim` functions/keybindings to map to any functionality one might find is missing in one's personal workflow.
 
-For starters, we have added a convenience function called `LLDBPrompt()`. By default when using the plugin, one has to be in the `Vimspector.Console` window, press `i` for insert mode and then type `-exec <my lldb command><CR>`. That's a lot of keystrokes (seven!) for such a common escape hatch command. Instead, we have wrapped all of that in this `LLDBPrompt()` function which is called from `Normal` mode in any window and is bound to a key `<localleader>z`. It shows the same prompt one would see when running (lldb) from the CLI. 
+For starters, we have added a convenience function called `LLDBPrompt()`. By default when using the plugin, one has to be in the `Vimspector.Console` window, press `i` for insert mode and then type `-exec <my lldb command><CR>`. That's a lot of keystrokes (seven!) for such a common escape hatch command. Instead, we have wrapped all of that in this `LLDBPrompt()` function which is called from `Normal` mode in any window and is bound to a key `<localleader>z`. It shows the same prompt one would see when running `lldb` from the CLI. 
 
-`(lldb) `
+`(lldb)         `
 
 Thus at minimum, we now have access to the same `lldb` we would have on the terminal with a GUI for everything that `vimspector` provides (i.e. the "bonus" stuff).
 
 One could use this like so:
 
-`lldb po myVar`
+`(lldb) po myVar`
 
 The outcome (value of `myVar`) will show up in the `Vimspector.Console` window. 
 
@@ -235,7 +235,7 @@ The outcome (value of `myVar`) will show up in the `Vimspector.Console` window.
 
 There are also some keybindings for saving/loading breakpoints and `vim` sessions. One would begin by setting some breakpoints and typing `<localleader>ss` for "session save". This saves a `.vimspector-session.vim` and a `.vimspector-sessionx.vim`. When one wants to resume the debugging, one could type `<localleader>sl` for "session load". This will restore any breakpoints, watchpoints, etc. that had been saved as well as anything that would be stored in a typical `vim` session. One could also call `vim -S vimspector-session.vim` and the breakpoint info would also automatically load. All of this is due to the bindings and helper function in the provided `vimrc`. The `vimspector` plugin does not quite work like this out of the box.
 
-Note: `\*.x.vim` files are automatically sourced when a session of the same name without the "x" is sourced. In our case, we save the typical vim session state in `.vimspector-session.vim` and the `.vimspector-sessionx.vim` with all the breakpoint info loads seamlessly along with it. The default `.vimspector.session` name has been modified via the `vimrc` excerpt to facilitate this workflow.
+**NOTE**: `*.x.vim` files are automatically sourced when a session of the same name without the "x" is sourced. In our case, we save the typical vim session state in `.vimspector-session.vim` and the `.vimspector-sessionx.vim` with all the breakpoint info loads seamlessly along with it. The default `.vimspector.session` name has been modified via the `vimrc` excerpt to facilitate this workflow.
 
 ## Keybindings for some common tasks
 
